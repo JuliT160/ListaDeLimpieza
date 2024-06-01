@@ -26,31 +26,40 @@ def puede_limpiarp(calendario, persona, dia):
     return True
 
 # Función para asignar las tareas de limpieza
+
 def asignar_tareas(personas, espacios, dias):
     calendario = {dia: {espacio.nombre: None for espacio in espacios if espacio.frecuencia == "diaria" or dia in espacio.frecuencia} for dia in dias}
-    contador_tareas = {p: 0 for p in personas}  # Contador de tareas asignadas a cada persona
+    contador_tareas = {p: 0 for p in personas}
 
     for dia in dias:
         for espacio in [e for e in espacios if e.frecuencia == "diaria" or dia in e.frecuencia]:
-            disponibles = [p for p in personas if dia not in p.no_disponibilidad and (espacio.restriccion_genero is None or p.genero == espacio.restriccion_genero) and p.nombre not in calendario[dia].values()]
-            posibles = [p for p in disponibles if puede_limpiarp(calendario, p, dia) and espacio.nombre not in p.tareas_asignadas.values()]
+            # Personas que cumplen todas las restricciones
+            posibles = [p for p in personas if dia not in p.no_disponibilidad 
+                        and (espacio.restriccion_genero is None or p.genero == espacio.restriccion_genero) 
+                        and p.nombre not in calendario[dia].values()
+                        and puede_limpiarp(calendario, p, dia)
+                        and espacio.nombre not in p.tareas_asignadas.values()]
 
-            # Ordena las personas por el número de tareas asignadas
+            # Si no hay nadie que cumpla todas las restricciones, relajamos la restricción de los dos días seguidos
+            if not posibles:
+                posibles = [p for p in personas if dia not in p.no_disponibilidad 
+                            and (espacio.restriccion_genero is None or p.genero == espacio.restriccion_genero) 
+                            and p.nombre not in calendario[dia].values()
+                            and espacio.nombre not in p.tareas_asignadas.values()]
+                if not posibles: #Si aún así no hay nadie disponible se busca entre las personas sin restricciones
+                    posibles = [p for p in personas if p.nombre not in calendario[dia].values()]
+            
+
+            # Ordenamos por menor cantidad de tareas y luego elegimos al azar entre los que tienen la misma cantidad
             posibles.sort(key=lambda p: contador_tareas[p])
+            min_tareas = contador_tareas[posibles[0]]
+            candidatos = [p for p in posibles if contador_tareas[p] == min_tareas]
+            elegido = random.choice(candidatos)
 
-            if posibles:
-                elegido = posibles[0]  # Elige la persona con menos tareas asignadas
-                calendario[dia][espacio.nombre] = elegido.nombre
-                elegido.tareas_asignadas[dia] = espacio.nombre
-                contador_tareas[elegido] += 1  # Incrementa el contador de tareas asignadas a la persona
-
-            else:
-                # En caso de que no haya nadie disponible, intentamos asignar a alguien sin considerar la restricción de dos días seguidos
-                if disponibles:
-                    elegido = random.choice(disponibles)
-                    calendario[dia][espacio.nombre] = elegido.nombre
-                    elegido.tareas_asignadas[dia] = espacio.nombre
-
+            calendario[dia][espacio.nombre] = elegido.nombre
+            elegido.tareas_asignadas[dia] = espacio.nombre
+            contador_tareas[elegido] += 1
+    
     return calendario
 
 # Función para imprimir el calendario de tareas
@@ -85,6 +94,7 @@ personas = [
     Persona("Juan", "H", []),
     Persona("Nicolas", "H", []),
     Persona("Sebastian", "H", []),
+    Persona("Alejo", "H", []),
     Persona("Lucia", "M", []),
     Persona("Zoe", "M", []),
     Persona("Julian", "H", []),
