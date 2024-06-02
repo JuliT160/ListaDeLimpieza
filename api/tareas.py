@@ -26,6 +26,7 @@ def puede_limpiarp(calendario, persona, dia):
     return True
 
 # Función para asignar las tareas de limpieza
+
 def asignar_tareas(personas, espacios, dias):
     calendario = {dia: {espacio.nombre: None for espacio in espacios if espacio.frecuencia == "diaria" or dia in espacio.frecuencia} for dia in dias}
     contador_tareas = {p: 0 for p in personas}
@@ -47,6 +48,7 @@ def asignar_tareas(personas, espacios, dias):
                             and espacio.nombre not in p.tareas_asignadas.values()]
                 if not posibles: #Si aún así no hay nadie disponible se busca entre las personas sin restricciones
                     posibles = [p for p in personas if p.nombre not in calendario[dia].values()]
+            
 
             # Ordenamos por menor cantidad de tareas y luego elegimos al azar entre los que tienen la misma cantidad
             posibles.sort(key=lambda p: contador_tareas[p])
@@ -59,3 +61,40 @@ def asignar_tareas(personas, espacios, dias):
             contador_tareas[elegido] += 1
     
     return calendario
+
+# Datos de entrada
+personas = [
+    Persona("Julieta", "M", []),
+    Persona("Iara", "M", []),
+    Persona("Benjamin", "H", []),
+    Persona("Nahuel", "H", []),
+    Persona("Tobias", "H", []),
+    Persona("Fermin", "H", []),
+    Persona("Magali", "M", []),
+    Persona("Belen", "M", []),
+    Persona("Josefina", "M", []),
+    Persona("Emilia", "M", []),
+    Persona("Valentina", "M", []),
+    Persona("Juan", "H", []),
+    Persona("Nicolas", "H", []),
+    Persona("Sebastian", "H", []),
+    Persona("Alejo", "H", []),
+    Persona("Lucia", "M", []),
+    Persona("Zoe", "M", []),
+    Persona("Julian", "H", []),
+    Persona("Mateo", "H", []),
+    Persona("Mirko", "H", []),
+]
+
+espacios = [
+    Espacio("Baño Mujeres", "M"),
+    Espacio("Baño Hombres", "H"),
+    Espacio("Baño Mixto"),
+    Espacio("Cocina Arriba"),
+    Espacio("Cocina Abajo"),
+    Espacio("Sala", frecuencia=["Lunes", "Miércoles", "Viernes"]),
+    Espacio("Hall y Vereda", frecuencia=["Lunes", "Miércoles", "Viernes"]),
+    Espacio("Patio", frecuencia=["Lunes", "Miércoles", "Viernes"])
+]
+
+dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
