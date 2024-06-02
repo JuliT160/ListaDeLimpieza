@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from api import Persona, Espacio, asignar_tareas
+from tareas import Persona, Espacio, asignar_tareas
 
 app = Flask(__name__)
 

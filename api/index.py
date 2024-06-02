@@ -2,6 +2,9 @@ from flask import Flask, render_template
 from tareas import asignar_tareas, personas, espacios, dias
 
 app = Flask(__name__)
+app.template_folder = "templates"
+app.static_folder = "static"
+
 
 @app.route('/')
 def index():
