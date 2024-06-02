@@ -119,11 +119,6 @@ dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Doming
 calendario = asignar_tareas(personas, espacios, dias)
 
 # Mostrar el resultado
-"""for dia, tareas in calendario.items():
-    print(f"{dia}:")
-    for espacio, persona in tareas.items():
-        print(f"  {espacio}: {persona}")"""
-
 imprimir_calendario(calendario, espacios, dias)
 
 # Mostrar los nombres de las personas con la cantidad de veces que limpia en la semana
