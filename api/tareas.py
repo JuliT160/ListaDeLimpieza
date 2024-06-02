@@ -28,6 +28,10 @@ def puede_limpiarp(calendario, persona, dia):
 # Función para asignar las tareas de limpieza
 
 def asignar_tareas(personas, espacios, dias):
+    # Reiniciar tareas asignadas y contadores de tareas
+    for persona in personas:
+        persona.tareas_asignadas = {}
+
     calendario = {dia: {espacio.nombre: None for espacio in espacios if espacio.frecuencia == "diaria" or dia in espacio.frecuencia} for dia in dias}
     contador_tareas = {p: 0 for p in personas}
 

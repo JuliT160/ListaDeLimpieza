@@ -9,7 +9,9 @@
 </head>
 
 <body>
-    <h1>Calendario de Tareas de Limpieza</h1>
+    <div class="header">
+        <h1>Calendario de Tareas de Limpieza</h1>
+    </div>
     <table border="1">
         <thead>
             <tr>
@@ -30,7 +32,6 @@
             {% endfor %}
         </tbody>
     </table>
-
     <h2>Asignación de Tareas</h2>
     <table class="compact">
         <thead>
@@ -40,14 +41,17 @@
             </tr>
         </thead>
         <tbody>
-            {% for persona, tareas in contador_tareas.items() %}
+            {% for persona, cantidad in contador_tareas.items() %}
             <tr>
                 <td>{{ persona }}</td>
-                <td>{{ tareas }}</td>
+                <td>{{ cantidad }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    <div class="navbar">
+        <a href="{{ url_for('inicio') }}">Volver a Inicio</a>
+    </div>
 </body>
 
 </html>
