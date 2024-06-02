@@ -20,3 +20,19 @@ th {
 tr:nth-child(even) {
     background-color: #f9f9f9;
 }
+
+table.compact {
+    width: 10%;
+    border-collapse: collapse;
+}
+
+table.compact th,
+table.compact td {
+    border: 1px solid black;
+    padding: 4px;
+    text-align: center;
+}
+
+table.compact th {
+    background-color: #f2f2f2;
+}

@@ -1,32 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendario de Tareas</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
 </head>
+
 <body>
-    <h1>Calendario de Tareas de Limpieza</h1>
+    <h1>Lista de Limpieza</h1>
     <table border="1">
         <thead>
             <tr>
                 <th>Día</th>
                 {% for espacio in espacios %}
-                    <th>{{ espacio.nombre }}</th>
+                <th>{{ espacio.nombre }}</th>
                 {% endfor %}
             </tr>
         </thead>
         <tbody>
             {% for dia, tareas in calendario.items() %}
-                <tr>
-                    <td>{{ dia }}</td>
-                    {% for espacio in espacios %}
-                        <td>{{ tareas[espacio.nombre] }}</td>
-                    {% endfor %}
-                </tr>
+            <tr>
+                <td>{{ dia }}</td>
+                {% for espacio in espacios %}
+                <td>{{ tareas[espacio.nombre] }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Distribucion de Tareas</h2>
+    <table class="compact">
+        <thead>
+            <tr>
+                <th>Persona</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for persona, tareas in contador_tareas.items() %}
+            <tr>
+                <td>{{ persona }}</td>
+                <td>{{ tareas }}</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
 </body>
+
 </html>

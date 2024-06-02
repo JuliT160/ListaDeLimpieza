@@ -3,6 +3,17 @@ from tareas import Persona, Espacio, asignar_tareas
 
 app = Flask(__name__)
 
+def contar_tareas(calendario):
+    contador_tareas = {}
+    for dia, tareas in calendario.items():
+        for espacio, persona in tareas.items():
+            if persona:
+                if persona in contador_tareas:
+                    contador_tareas[persona] += 1
+                else:
+                    contador_tareas[persona] = 1
+    return contador_tareas
+
 @app.route('/')
 def index():
     personas = [
@@ -42,7 +53,8 @@ def index():
     dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 
     calendario = asignar_tareas(personas, espacios, dias)
-    return render_template('index.html', calendario=calendario, espacios=espacios, dias=dias)
+    contador_tareas = contar_tareas(calendario)
+    return render_template('index.html', calendario=calendario, espacios=espacios, dias=dias, contador_tareas=contador_tareas)
 
 if __name__ == '__main__':
     app.run(debug=True)
