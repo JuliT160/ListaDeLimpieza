@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from tareas import Persona, Espacio, asignar_tareas
+from tareas import Persona, Espacio, asignar_tareas, contar_tareas
 
 app = Flask(__name__)
 app.template_folder = "../templates"
@@ -40,16 +40,7 @@ espacios = [
 
 dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 
-def contar_tareas(calendario):
-    contador_tareas = {}
-    for dia, tareas in calendario.items():
-        for espacio, persona in tareas.items():
-            if persona:
-                if persona in contador_tareas:
-                    contador_tareas[persona] += 1
-                else:
-                    contador_tareas[persona] = 1
-    return contador_tareas
+
 
 @app.route('/')
 def inicio():
