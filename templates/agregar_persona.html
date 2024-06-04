@@ -13,17 +13,25 @@
         <h1>Agregar Persona</h1>
     </div>
     <form method="post">
-        <label for="nombre">Nombre:</label><br>
-        <input type="text" id="nombre" name="nombre"><br>
-        <label for="genero">Género:</label><br>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre">
+
+        <label for="genero">Género:</label>
         <select id="genero" name="genero">
             <option value="M">Mujer</option>
             <option value="H">Hombre</option>
-        </select><br>
-        <label for="no_disponibilidad">Días no disponibles:</label><br>
-        {% for dia in dias %}
-        <input type="checkbox" name="no_disponibilidad" value="{{ dia }}"> {{ dia }}<br>
-        {% endfor %}
+        </select>
+
+        <label for="no_disponibilidad">Días no disponibles:</label>
+        <div class="checkbox-group">
+            {% for dia in dias %}
+            <div class="checkbox-item">
+                <input type="checkbox" name="no_disponibilidad" value="{{ dia }}">
+                <label>{{ dia }}</label>
+            </div>
+            {% endfor %}
+        </div>
+
         <button type="submit">Agregar</button>
     </form>
     <div class="navbar">

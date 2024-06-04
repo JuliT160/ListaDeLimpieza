@@ -38,6 +38,15 @@ ul li {
     align-items: center;
 }
 
+ul li span {
+    flex-grow: 1;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
 ul li a {
     margin: 0 5px;
 }
@@ -85,13 +94,35 @@ label {
 }
 
 input[type="text"],
-select,
-input[type="checkbox"] {
-    width: 100%;
+select {
+    width: calc(100% - 22px);
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    width: calc(50% - 10px);
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.checkbox-item label {
+    font-weight: normal;
 }
 
 button {
@@ -103,6 +134,7 @@ button {
     font-size: 16px;
     cursor: pointer;
     border-radius: 4px;
+    margin-top: 10px;
 }
 
 button:hover {
@@ -113,6 +145,7 @@ button:hover {
     width: auto;
     margin: 0 auto;
     border-collapse: collapse;
+    margin-bottom: 15px;
 }
 
 .compact th,
@@ -124,6 +157,11 @@ button:hover {
 
 .compact th {
     background-color: #f2f2f2;
+}
+
+.lista-personas {
+    margin-bottom: 15px;
+    margin-top: 15px;
 }
 
 .header {

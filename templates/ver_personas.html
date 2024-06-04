@@ -12,12 +12,14 @@
     <div class="header">
         <h1>Personas</h1>
     </div>
-    <ul>
+    <ul class="lista-personas">
         {% for persona in personas %}
         <li>
-            {{ persona.nombre }} ({{ persona.genero }})
-            <a href="{{ url_for('modificar_persona', nombre=persona.nombre) }}">Modificar</a>
-            <a href="{{ url_for('eliminar_persona', nombre=persona.nombre) }}">Eliminar</a>
+            <span>{{ persona.nombre }}</span>
+            <div class="actions">
+                <a href="{{ url_for('modificar_persona', nombre=persona.nombre) }}">Modificar</a>
+                <a href="{{ url_for('eliminar_persona', nombre=persona.nombre) }}">Eliminar</a>
+            </div>
         </li>
         {% endfor %}
     </ul>
