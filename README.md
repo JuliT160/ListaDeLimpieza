@@ -2,6 +2,9 @@
 
 Esta es una aplicación web para gestionar y asignar tareas de limpieza de la residencia, su uso es bastante especifico. Utiliza Flask para la creación del servidor web y permite ver, agregar, modificar y eliminar personas, así como generar una lista de tareas distribuidas uniformemente.
 
+# Aclaración
+El proyecto se encuentra en una etapa muy temprana de desarollo, puede tener errores y su estetica no es la final.
+
 ## Características
 
 - Ver personas
@@ -54,5 +57,3 @@ Esta es una aplicación web para gestionar y asignar tareas de limpieza de la re
 ## Contacto
 
 Para cualquier consulta o comentario, por favor, contacta a través de [contactosjulit@gmail.com](mailto:contactosjulit@gmail.com).
-
-```
