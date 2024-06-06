@@ -109,6 +109,7 @@ select {
     gap: 10px;
     margin-bottom: 10px;
     margin-top: 15px;
+    flex-flow: nowrap, column;
 }
 
 .checkbox-item {
@@ -158,6 +159,7 @@ button:hover {
     text-align: center;
     border-radius: 4px;
     cursor: pointer;
+    text-align: center;
 }
 
 .option:hover {

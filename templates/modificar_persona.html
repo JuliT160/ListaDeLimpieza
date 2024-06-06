@@ -1,41 +1,32 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Persona</title>
+    <title>Modificar Persona</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
 <body>
-    <div class="header">
-        <h1>Agregar Persona</h1>
-    </div>
-    <form method="post">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre">
-
-        <label for="genero">Género:</label>
-        <select id="genero" name="genero">
-            <option value="M">Mujer</option>
-            <option value="H">Hombre</option>
-        </select>
-
-        <label for="no_disponibilidad">Días no disponibles:</label>
-        <div class="checkbox-group">
-            {% for dia in dias %}
-            <div class="checkbox-item">
-                <input type="checkbox" name="no_disponibilidad" value="{{ dia }}">
-                <label>{{ dia }}</label>
-            </div>
-            {% endfor %}
+    <div class="container">
+        <div class="header">
+            <h1>Modificar Persona: {{ persona.nombre }}</h1>
         </div>
-
-        <button type="submit">Agregar</button>
-    </form>
-    <div class="navbar">
-        <a href="{{ url_for('ver_personas') }}">Cancelar</a>
+        
+        <form method="post">
+            <label for="no_disponibilidad">Días no disponibles:</label>
+            <div class="checkbox-group">
+                {% for dia in dias %}
+                <div class="checkbox-item">
+                    <input type="checkbox" name="no_disponibilidad" value="{{ dia }}">
+                    <label>{{ dia }}</label>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit">Guardar</button>
+            <button type="cancel">Atras</button>
+        </form>
     </div>
 </body>
 
