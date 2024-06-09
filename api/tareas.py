@@ -26,7 +26,6 @@ def puede_limpiarp(calendario, persona, dia):
     return True
 
 # Función para asignar las tareas de limpieza
-
 def asignar_tareas(personas, espacios, dias):
     # Reiniciar tareas asignadas y contadores de tareas
     for persona in personas:
@@ -53,7 +52,6 @@ def asignar_tareas(personas, espacios, dias):
                 if not posibles: #Si aún así no hay nadie disponible se busca entre las personas sin restricciones
                     posibles = [p for p in personas if p.nombre not in calendario[dia].values()]
             
-
             # Ordenamos por menor cantidad de tareas y luego elegimos al azar entre los que tienen la misma cantidad
             posibles.sort(key=lambda p: contador_tareas[p])
             min_tareas = contador_tareas[posibles[0]]
@@ -66,6 +64,7 @@ def asignar_tareas(personas, espacios, dias):
     
     return calendario
 
+# Función para contar las tareas asignadas a cada persona
 def contar_tareas(calendario):
     contador_tareas = {}
     for dia, tareas in calendario.items():
