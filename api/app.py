@@ -35,8 +35,8 @@ espacios = [
     Espacio("Cocina Abajo"),
     Espacio("Sala", frecuencia=["Lunes", "Miércoles", "Viernes"]),
     Espacio("Hall y Vereda", frecuencia=["Lunes", "Miércoles", "Viernes"]),
-    Espacio("Patio1", frecuencia=["Lunes", "Miércoles", "Viernes"]),
-    Espacio("Patio2", frecuencia=["Lunes", "Miércoles", "Viernes"]),
+    Espacio("Patio", frecuencia=["Lunes", "Miércoles", "Viernes"]),
+    #Espacio("Patio2", frecuencia=["Lunes", "Miércoles", "Viernes"]),
 ]
 
 dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
