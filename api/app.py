@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from tareas import Persona, Espacio, asignar_tareas, contar_tareas
+from tareas_mejoradas import Persona, Espacio, asignar_tareas_mejorado, contar_tareas_mejorado
 
 app = Flask(__name__)
 app.template_folder = "../templates"
@@ -42,7 +42,6 @@ espacios = [
 dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 
 
-
 @app.route('/')
 def inicio():
     return render_template('inicio.html')
@@ -56,7 +55,7 @@ def modificar_persona(nombre):
     persona = next((p for p in personas if p.nombre == nombre), None)
     if request.method == 'POST':
         no_disponibilidad = request.form.getlist('no_disponibilidad')
-        persona.no_disponibilidad = no_disponibilidad
+        persona.no_disponibilidad = set(no_disponibilidad)  # Use a set instead of a list
         return redirect(url_for('ver_personas'))
     return render_template('modificar_persona.html', persona=persona, dias=dias)
 
@@ -65,7 +64,7 @@ def agregar_persona():
     if request.method == 'POST':
         nombre = request.form['nombre']
         genero = request.form['genero']
-        no_disponibilidad = request.form.getlist('no_disponibilidad')
+        no_disponibilidad = set(request.form.getlist('no_disponibilidad'))  # Use a set instead of a list
         nueva_persona = Persona(nombre, genero, no_disponibilidad)
         personas.append(nueva_persona)
         return redirect(url_for('ver_personas'))
@@ -79,8 +78,12 @@ def eliminar_persona(nombre):
 
 @app.route('/generar_lista')
 def generar_lista():
-    calendario = asignar_tareas(personas, espacios, dias)
-    contador_tareas = contar_tareas(calendario)
+    # Reset tareas_asignadas for each person before generating the list
+    for persona in personas:
+        persona.tareas_asignadas = 0
+    
+    calendario = asignar_tareas_mejorado(personas, espacios, dias)
+    contador_tareas = contar_tareas_mejorado(calendario)
     return render_template('index.html', calendario=calendario, espacios=espacios, dias=dias, contador_tareas=contador_tareas)
 
 if __name__ == '__main__':
