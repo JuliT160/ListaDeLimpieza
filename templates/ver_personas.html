@@ -1,31 +1,32 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ver Personas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
+{% block title %}Ver Personas - Gestión de Tareas{% endblock %}
 
-<body>
-    <div class="header">
-        <h1>Personas</h1>
-    </div>
-    <ul class="lista-personas">
+{% block content %}
+<h1>Lista de Personas</h1>
+<table class="table" >
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Género</th>
+            <th>No Disponibilidad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
         {% for persona in personas %}
-        <li>
-            <span>{{ persona.nombre }}</span>
-            <div class="actions">
-                <a href="{{ url_for('modificar_persona', nombre=persona.nombre) }}">Modificar</a>
-                <a href="{{ url_for('eliminar_persona', nombre=persona.nombre) }}">Eliminar</a>
-            </div>
-        </li>
+        <tr>
+            <td>{{ persona.nombre }}</td>
+            <td>{{ persona.genero }}</td>
+            <td>{{ ", ".join(persona.no_disponibilidad) }}</td>
+            <td>
+                <a href="{{ url_for('modificar_persona', nombre=persona.nombre) }}"
+                    class="btn btn-sm btn-primary">Modificar</a>
+                <a href="{{ url_for('eliminar_persona', nombre=persona.nombre) }}" class="btn btn-sm btn-danger"
+                    onclick="return confirm('¿Está seguro de que desea eliminar a esta persona?')">Eliminar</a>
+            </td>
+        </tr>
         {% endfor %}
-    </ul>
-    <div class="navbar">
-        <a href="{{ url_for('inicio') }}">Volver a Inicio</a>
-    </div>
-</body>
-
-</html>
+    </tbody>
+</table>
+{% endblock %}

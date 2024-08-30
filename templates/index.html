@@ -1,57 +1,34 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario de Tareas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
+{% block title %}Lista de Tareas - Gestión de Tareas{% endblock %}
 
-<body>
-    <div class="header">
-        <h1>Calendario de Tareas de Limpieza</h1>
-    </div>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Día</th>
-                {% for espacio in espacios %}
-                <th>{{ espacio.nombre }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for dia, tareas in calendario.items() %}
-            <tr>
-                <td>{{ dia }}</td>
-                {% for espacio in espacios %}
-                <td>{{ tareas[espacio.nombre] }}</td>
-                {% endfor %}
-            </tr>
+{% block content %}
+<h1>Lista de Tareas Generada</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Día</th>
+            {% for espacio in espacios %}
+            <th>{{ espacio.nombre }}</th>
             {% endfor %}
-        </tbody>
-    </table>
-    <h2>Asignación de Tareas</h2>
-    <table class="compact">
-        <thead>
-            <tr>
-                <th>Persona</th>
-                <th>Cantidad de Tareas</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for persona, cantidad in contador_tareas.items() %}
-            <tr>
-                <td>{{ persona }}</td>
-                <td>{{ cantidad }}</td>
-            </tr>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dia in dias %}
+        <tr>
+            <td>{{ dia }}</td>
+            {% for espacio in espacios %}
+            <td>{{ calendario[dia][espacio.nombre] }}</td>
             {% endfor %}
-        </tbody>
-    </table>
-    <div class="navbar">
-        <a href="{{ url_for('inicio') }}">Volver a Inicio</a>
-    </div>
-</body>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-</html>
+<h2>Conteo de Tareas por Persona</h2>
+<ul>
+    {% for persona, count in contador_tareas.items() %}
+    <li>{{ persona }}: {{ count }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

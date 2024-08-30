@@ -1,33 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modificar Persona</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
+{% block title %}Modificar Persona{% endblock %}
 
+{% block content %}
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Modificar Persona: {{ persona.nombre }}</h1>
+    <div class="container mt-4">
+        <div class="header mb-4">
+            <h1 class="text-center text-primary text-dark">Modificar Persona: {{ persona.nombre }}</h1>
         </div>
         
-        <form method="post">
-            <label for="no_disponibilidad">Días no disponibles:</label>
-            <div class="checkbox-group">
-                {% for dia in dias %}
-                <div class="checkbox-item">
-                    <input type="checkbox" name="no_disponibilidad" value="{{ dia }}">
-                    <label>{{ dia }}</label>
+        <form method="post" class="border p-4 rounded bg-light">
+            <div class="mb-3">
+                <label for="no_disponibilidad" class="form-label">Días no disponibles:</label>
+                <div class="row">
+                    {% for dia in dias %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="no_disponibilidad" value="{{ dia }}" id="dia-{{ loop.index }}">
+                            <label class="form-check-label" for="dia-{{ loop.index }}">
+                                {{ dia }}
+                            </label>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
-            <button type="submit">Guardar</button>
-            <button type="cancel">Atras</button>
+            <div class="">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a href="{{ url_for('ver_personas') }}" class="btn btn-primary">Atrás</a>
+            </div>
         </form>
     </div>
+    
 </body>
-
-</html>
+{% endblock %}

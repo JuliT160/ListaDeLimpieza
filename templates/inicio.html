@@ -1,22 +1,45 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
+{% block title %}Inicio - Gestión de Tareas{% endblock %}
 
-<body>
-    <div class="header">
-        <h1>Inicio</h1>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <h1 class="display-4 mb-4">Gestión de Tareas de Limpieza</h1>
+        <p class="lead mb-5">Organiza y distribuye las tareas de limpieza de manera eficiente y equitativa.</p>
     </div>
-    <div class="button-container">
-        <a href="{{ url_for('ver_personas') }}" class="option">Ver Personas</a>
-        <a href="{{ url_for('agregar_persona') }}" class="option">Agregar Persona</a>
-        <a href="{{ url_for('generar_lista') }}" class="option">Generar Lista de Tareas</a>
-    </div>
-</body>
+</div>
 
-</html>
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Gestionar Personas</h5>
+                <p class="card-text">Añade, modifica o elimina personas del sistema de tareas.</p>
+                <a href="{{ url_for('ver_personas') }}" class="btn btn-primary">Ver Personas</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-user-plus fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Añadir Nueva Persona</h5>
+                <p class="card-text">Incorpora una nueva persona al sistema de tareas.</p>
+                <a href="{{ url_for('agregar_persona') }}" class="btn btn-success">Agregar Persona</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-list-alt fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Generar Lista de Tareas</h5>
+                <p class="card-text">Crea una lista de tareas equilibrada para todos los participantes.</p>
+                <a href="{{ url_for('generar_lista') }}" class="btn btn-info">Generar Lista</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
