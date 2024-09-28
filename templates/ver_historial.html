@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Tareas - Gestión de Tareas{% endblock %}
+
+{% block content %}
+<h1>Historial de Tareas</h1>
+
+<!-- Botón para abrir el modal -->
+<button type="button" class="btn btn-danger mb-3" data-bs-toggle="modal" data-bs-target="#borrarHistorialModal">
+    Borrar Historial
+</button>
+
+<!-- Modal para confirmar borrado -->
+<div class="modal fade" id="borrarHistorialModal" tabindex="-1" aria-labelledby="borrarHistorialModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="borrarHistorialModalLabel">Confirmar borrado de historial</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('borrar_historial') }}" method="POST">
+                <div class="modal-body">
+                    <p>¿Estás seguro de que quieres borrar todo el historial? Esta acción no se puede deshacer.</p>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña:</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Borrar Historial</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if historial %}
+{% for entrada in historial %}
+<div class="card mb-3">
+    <div class="card-header">
+        Fecha: {{ entrada.fecha }}
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Lista</h5>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Día</th>
+                    {% for espacio in entrada.calendario[entrada.calendario.keys()|list|first].keys() %}
+                    <th>{{ espacio }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for dia, tareas in entrada.calendario.items() %}
+                <tr>
+                    <td>{{ dia }}</td>
+                    {% for espacio, persona in tareas.items() %}
+                    <td>{{ persona }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h5 class="card-title mt-4">Conteo de Tareas</h5>
+        <ul>
+            {% for persona, count in entrada.contador_tareas.items() %}
+            <li>{{ persona }}: {{ count }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<p>No hay historial disponible.</p>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Si hay un mensaje flash, mostrarlo y luego ocultarlo después de 3 segundos
+    document.addEventListener('DOMContentLoaded', (event) => {
+        let alertElement = document.querySelector('.alert');
+        if (alertElement) {
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 3000);
+        }
+    });
+</script>
+{% endblock %}

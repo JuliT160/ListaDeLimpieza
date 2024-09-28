@@ -3,12 +3,12 @@ from tareas_mejoradas import Persona, Espacio, asignar_tareas_mejorado, contar_t
 from firebase_config import db
 from datetime import datetime
 from firebase_admin import firestore
-from flask import jsonify
+from flask import jsonify, flash
 
 app = Flask(__name__)
 app.template_folder = "../templates"
 app.static_folder = "../static"
-
+app.secret_key = 'Trenque769' 
 personas = [
     Persona("Julieta", "M", []),
     Persona("Iara", "M", []),
@@ -131,6 +131,34 @@ def generar_lista():
     calendario = asignar_tareas_mejorado(personas, espacios, dias, calendario_anterior, contador_tareas_anterior)
     contador_tareas = contar_tareas_mejorado(calendario)
     return render_template('index.html', calendario=calendario, espacios=espacios, dias=dias, contador_tareas=contador_tareas)
+
+
+@app.route('/ver_historial')
+def ver_historial():
+    historial = db.collection('historial').order_by('fecha', direction=firestore.Query.DESCENDING).limit(10).get()
+    
+    historial_list = []
+    for doc in historial:
+        data = doc.to_dict()
+        data['fecha'] = data['fecha'].strftime("%Y-%m-%d %H:%M:%S")
+        historial_list.append(data)
+    
+    return render_template('ver_historial.html', historial=historial_list)
+
+
+@app.route('/borrar_historial', methods=['POST'])
+def borrar_historial():
+    password = request.form.get('password')
+    if password == 'Trenque769':
+        # Borrar todo el historial
+        docs = db.collection('historial').get()
+        for doc in docs:
+            doc.reference.delete()
+        flash('Historial borrado correctamente', 'success')
+    else:
+        flash('Contraseña incorrecta', 'danger')
+    return redirect(url_for('ver_historial'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
