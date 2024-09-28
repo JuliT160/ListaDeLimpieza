@@ -31,4 +31,29 @@
     <li>{{ persona }}: {{ count }}</li>
     {% endfor %}
 </ul>
+
+<button id="guardar-historial" class="btn btn-primary">Guardar Historial</button>
+
+<script>
+document.getElementById('guardar-historial').addEventListener('click', function() {
+    fetch('/guardar_historial', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            calendario: {{ calendario|tojson }},
+            contador_tareas: {{ contador_tareas|tojson }}
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Error al guardar el historial');
+    });
+});
+</script>
 {% endblock %}

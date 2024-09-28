@@ -1,5 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 from tareas_mejoradas import Persona, Espacio, asignar_tareas_mejorado, contar_tareas_mejorado
+from firebase_config import db
+from datetime import datetime
+from firebase_admin import firestore
+from flask import jsonify
 
 app = Flask(__name__)
 app.template_folder = "../templates"
@@ -76,13 +80,55 @@ def eliminar_persona(nombre):
     personas = [p for p in personas if p.nombre != nombre]
     return redirect(url_for('ver_personas'))
 
+@app.route('/guardar_historial', methods=['POST'])
+def guardar_historial():
+    calendario = request.json['calendario']
+    contador_tareas = request.json['contador_tareas']
+    
+    historial = {
+        'fecha': datetime.now(),
+        'calendario': calendario,
+        'contador_tareas': contador_tareas
+    }
+    
+    db.collection('historial').add(historial)
+    
+    return jsonify({'message': 'Historial guardado correctamente'}), 200
+
+@app.route('/obtener_ultimo_historial')
+def obtener_ultimo_historial():
+    ultimo_historial = db.collection('historial').order_by('fecha', direction=firestore.Query.DESCENDING).limit(1).get()
+    
+    if len(ultimo_historial) > 0:
+        return jsonify(ultimo_historial[0].to_dict()), 200
+    else:
+        return jsonify({'message': 'No hay historial disponible'}), 404
+    
+    calendario = asignar_tareas_mejorado(personas, espacios, dias, calendario_anterior, contador_tareas_anterior)
+    contador_tareas = contar_tareas_mejorado(calendario)
+    return render_template('index.html', calendario=calendario, espacios=espacios, dias=dias, contador_tareas=contador_tareas)
+
+
+
+# Modifica la función generar_lista para usar el historial
 @app.route('/generar_lista')
 def generar_lista():
     # Reset tareas_asignadas for each person before generating the list
     for persona in personas:
         persona.tareas_asignadas = 0
     
-    calendario = asignar_tareas_mejorado(personas, espacios, dias)
+    # Obtener el último historial
+    ultimo_historial = db.collection('historial').order_by('fecha', direction=firestore.Query.DESCENDING).limit(1).get()
+    
+    if len(ultimo_historial) > 0:
+        historial = ultimo_historial[0].to_dict()
+        calendario_anterior = historial['calendario']
+        contador_tareas_anterior = historial['contador_tareas']
+    else:
+        calendario_anterior = None
+        contador_tareas_anterior = None
+    
+    calendario = asignar_tareas_mejorado(personas, espacios, dias, calendario_anterior, contador_tareas_anterior)
     contador_tareas = contar_tareas_mejorado(calendario)
     return render_template('index.html', calendario=calendario, espacios=espacios, dias=dias, contador_tareas=contador_tareas)
 

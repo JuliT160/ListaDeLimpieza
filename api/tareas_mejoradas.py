@@ -8,6 +8,7 @@ class Persona:
         self.genero = genero
         self.no_disponibilidad = set(no_disponibilidad)
         self.tareas_asignadas = 0
+        self.espacios_asignados = defaultdict(int)  # Nuevo: para contar asignaciones por espacio
 
 class Espacio:
     def __init__(self, nombre: str, genero_preferido: str = None, frecuencia: List[str] = None):
@@ -15,9 +16,13 @@ class Espacio:
         self.genero_preferido = genero_preferido
         self.frecuencia = set(frecuencia) if frecuencia else set()
 
-def asignar_tareas_mejorado(personas: List[Persona], espacios: List[Espacio], dias: List[str]) -> Dict[str, Dict[str, str]]:
+def asignar_tareas_mejorado(personas: List[Persona], espacios: List[Espacio], dias: List[str], calendario_anterior: Dict[str, Dict[str, str]] = None, contador_tareas_anterior: Dict[str, int] = None) -> Dict[str, Dict[str, str]]:
     calendario = {dia: {espacio.nombre: "" for espacio in espacios} for dia in dias}
     personas_disponibles = defaultdict(list)
+
+    # Reiniciar contadores de espacios asignados
+    for persona in personas:
+        persona.espacios_asignados.clear()
 
     # Crear listas de personas disponibles por día
     for dia in dias:
@@ -37,6 +42,19 @@ def asignar_tareas_mejorado(personas: List[Persona], espacios: List[Espacio], di
                 candidatos = personas_disponibles[dia]
 
             if candidatos:
+                # Ajustar la selección basada en el historial y asignaciones previas
+                if calendario_anterior and contador_tareas_anterior:
+                    persona_anterior = calendario_anterior.get(dia, {}).get(espacio.nombre)
+                    if persona_anterior:
+                        candidatos = [p for p in candidatos if p.nombre != persona_anterior]
+
+                # Filtrar candidatos que ya han sido asignados a este espacio esta semana
+                candidatos = [p for p in candidatos if p.espacios_asignados[espacio.nombre] == 0]
+
+                if not candidatos:
+                    # Si no hay candidatos sin asignaciones previas, seleccionar entre todos
+                    candidatos = personas_disponibles[dia]
+
                 # Select candidates with the minimum number of assigned tasks
                 min_tasks = min(p.tareas_asignadas for p in candidatos)
                 candidatos_min = [p for p in candidatos if p.tareas_asignadas == min_tasks]
@@ -45,6 +63,7 @@ def asignar_tareas_mejorado(personas: List[Persona], espacios: List[Espacio], di
                 persona_elegida = random.choice(candidatos_min)
                 calendario[dia][espacio.nombre] = persona_elegida.nombre
                 persona_elegida.tareas_asignadas += 1
+                persona_elegida.espacios_asignados[espacio.nombre] += 1
                 personas_disponibles[dia].remove(persona_elegida)
 
     return calendario
