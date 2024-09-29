@@ -2,6 +2,9 @@
 firebase_credentials.json
 lista-de-limpieza-353d33339f47.json
 
+## .env ##
+envVar.env
+
 ## pycache ##
 __pycache__
 
