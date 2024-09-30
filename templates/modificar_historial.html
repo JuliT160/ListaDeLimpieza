@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Modificar Historial{% endblock %}
+
+{% block content %}
+<h1>Modificar Historial</h1>
+
+<form action="{{ url_for('guardar_modificacion_historial', id=historial.id) }}" method="POST">
+    <div class="mb-3">
+        <label for="calendario" class="form-label">Calendario:</label>
+        <textarea name="calendario" class="form-control" rows="5">{{ historial.calendario | tojson }}</textarea>
+    </div>
+    <div class="mb-3">
+        <label for="contador_tareas" class="form-label">Contador de Tareas:</label>
+        <textarea name="contador_tareas" class="form-control"
+            rows="3">{{ historial.contador_tareas | tojson }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+</form>
+
+{% endblock %}

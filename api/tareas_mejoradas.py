@@ -20,9 +20,24 @@ def asignar_tareas_mejorado(personas: List[Persona], espacios: List[Espacio], di
     calendario = {dia: {espacio.nombre: "" for espacio in espacios} for dia in dias}
     personas_disponibles = defaultdict(list)
 
+    # Calcular el promedio de tareas asignadas
+    if contador_tareas_anterior:
+        total_tareas = sum(contador_tareas_anterior.values())
+        promedio_tareas = total_tareas / len(contador_tareas_anterior)
+    else:
+        promedio_tareas = 0
+
     # Reiniciar contadores de espacios asignados
     for persona in personas:
         persona.espacios_asignados.clear()
+        # Establecer el límite de tareas solo para los que están por encima del promedio
+        if contador_tareas_anterior and persona.nombre in contador_tareas_anterior:
+            if contador_tareas_anterior[persona.nombre] > promedio_tareas:
+                persona.limite_tareas = max(0, contador_tareas_anterior[persona.nombre] - 1)
+            else:
+                persona.limite_tareas = float('inf')
+        else:
+            persona.limite_tareas = float('inf')
 
     # Crear listas de personas disponibles por día
     for dia in dias:
@@ -42,8 +57,15 @@ def asignar_tareas_mejorado(personas: List[Persona], espacios: List[Espacio], di
                 candidatos = personas_disponibles[dia]
 
             if candidatos:
+                # Filtrar candidatos que no han alcanzado su límite de tareas
+                candidatos = [p for p in candidatos if p.tareas_asignadas < p.limite_tareas]
+
+                if not candidatos:
+                    # Si todos han alcanzado su límite, seleccionar entre todos
+                    candidatos = personas_disponibles[dia]
+
                 # Ajustar la selección basada en el historial y asignaciones previas
-                if calendario_anterior and contador_tareas_anterior:
+                if calendario_anterior:
                     persona_anterior = calendario_anterior.get(dia, {}).get(espacio.nombre)
                     if persona_anterior:
                         candidatos = [p for p in candidatos if p.nombre != persona_anterior]

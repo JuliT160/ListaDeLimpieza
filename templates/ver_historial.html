@@ -66,10 +66,11 @@
 
         <h5 class="card-title mt-4">Conteo de Tareas</h5>
         <ul>
-            {% for persona, count in entrada.contador_tareas.items() %}
+            {% for persona, count in entrada.contador_tareas|dictsort(by='value', reverse=true) %}
             <li>{{ persona }}: {{ count }}</li>
             {% endfor %}
         </ul>
+ 
     </div>
 </div>
 {% endfor %}

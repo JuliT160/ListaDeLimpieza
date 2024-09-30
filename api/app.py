@@ -209,6 +209,42 @@ def generar_calendario():
     calendario = asignar_tareas_mejorado(personas, espacios, dias, calendario_anterior, contador_tareas_anterior)
     contador_tareas = contar_tareas_mejorado(calendario)
 
+@app.route('/borrar_historial_individual/<int:id>', methods=['POST'])
+def borrar_historial_individual(id):
+    db = get_db()
+    db.execute('DELETE FROM historial WHERE id = ?', (id,))
+    db.commit()
+    flash('Entrada de historial borrada correctamente', 'success')
+    return redirect(url_for('ver_historial'))
+
+@app.route('/modificar_historial_individual/<int:id>', methods=['GET'])
+def modificar_historial_individual(id):
+    db = get_db()
+    historial = db.execute('SELECT * FROM historial WHERE id = ?', (id,)).fetchone()
+    
+    if historial:
+        return render_template('modificar_historial.html', historial={
+            'id': historial['id'],
+            'calendario': json.loads(historial['calendario']),
+            'contador_tareas': json.loads(historial['contador_tareas'])
+        })
+    else:
+        flash('El historial no existe', 'danger')
+        return redirect(url_for('ver_historial'))
+
+@app.route('/guardar_modificacion_historial/<int:id>', methods=['POST'])
+def guardar_modificacion_historial(id):
+    calendario = request.form['calendario']
+    contador_tareas = request.form['contador_tareas']
+    
+    db = get_db()
+    db.execute('UPDATE historial SET calendario = ?, contador_tareas = ? WHERE id = ?',
+               (calendario, contador_tareas, id))
+    db.commit()
+    
+    flash('Historial actualizado correctamente', 'success')
+    return redirect(url_for('ver_historial'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

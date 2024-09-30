@@ -27,7 +27,7 @@
 
 <h2>Conteo de Tareas por Persona</h2>
 <ul>
-    {% for persona, count in contador_tareas.items() %}
+    {% for persona, count in contador_tareas|dictsort(by='value', reverse=true) %}
     <li>{{ persona }}: {{ count }}</li>
     {% endfor %}
 </ul>
