@@ -1,13 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, g
 from tareas_mejoradas import Persona, Espacio, asignar_tareas_mejorado, contar_tareas_mejorado
 from datetime import datetime
+from dotenv import load_dotenv
 import sqlite3
 import json
+import os
 
 app = Flask(__name__)
 app.template_folder = "../templates"
 app.static_folder = "../static"
-app.secret_key = 'Trenque769'
+app.secret_key = os.getenv('SECRET_KEY')
 
 # Configuración de la base de datos SQLite
 DATABASE = 'tareas.db'
@@ -41,6 +43,7 @@ def init_db():
 # Asegúrate de llamar a init_db() antes de ejecutar la aplicación
 init_db()
 
+# Declaracion y obtencion de datos necesarios
 def get_personas():
     db = get_db()
     personas = db.execute('SELECT * FROM personas').fetchall()
@@ -59,11 +62,12 @@ espacios = [
 
 dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 
-
+# Rutas
 @app.route('/')
 def inicio():
     return render_template('inicio.html')
 
+# Manejo de personas
 @app.route('/ver_personas')
 def ver_personas():
     personas = get_personas()
@@ -100,6 +104,7 @@ def eliminar_persona(nombre):
     db.commit()
     return redirect(url_for('ver_personas'))
 
+#Manejo de historial
 @app.route('/guardar_historial', methods=['POST'])
 def guardar_historial():
     calendario = json.dumps(request.json['calendario'])
@@ -126,36 +131,6 @@ def obtener_ultimo_historial():
         }), 200
     else:
         return jsonify({'message': 'No hay historial disponible'}), 404
-    
-    calendario = asignar_tareas_mejorado(personas, espacios, dias, calendario_anterior, contador_tareas_anterior)
-    contador_tareas = contar_tareas_mejorado(calendario)
-    return render_template('index.html', calendario=calendario, espacios=espacios, dias=dias, contador_tareas=contador_tareas)
-
-
-
-# Modifica la función generar_lista para usar el historial
-@app.route('/generar_lista')
-def generar_lista():
-    personas = get_personas()
-    # Reset tareas_asignadas for each person before generating the list
-    for persona in personas:
-        persona.tareas_asignadas = 0
-    
-    # Obtener el último historial
-    db = get_db()
-    ultimo_historial = db.execute('SELECT * FROM historial ORDER BY fecha DESC LIMIT 1').fetchone()
-    
-    if ultimo_historial:
-        calendario_anterior = json.loads(ultimo_historial['calendario'])
-        contador_tareas_anterior = json.loads(ultimo_historial['contador_tareas'])
-    else:
-        calendario_anterior = None
-        contador_tareas_anterior = None
-    
-    calendario = asignar_tareas_mejorado(personas, espacios, dias, calendario_anterior, contador_tareas_anterior)
-    contador_tareas = contar_tareas_mejorado(calendario)
-    return render_template('index.html', calendario=calendario, espacios=espacios, dias=dias, contador_tareas=contador_tareas)
-
 
 @app.route('/ver_historial')
 def ver_historial():
@@ -182,7 +157,7 @@ def ver_historial():
 @app.route('/borrar_historial', methods=['POST'])
 def borrar_historial():
     password = request.form.get('password')
-    if password == 'Trenque769':
+    if password == os.getenv('ADMIN_PASSWORD'):
         db = get_db()
         db.execute('DELETE FROM historial')
         db.commit()
@@ -191,37 +166,24 @@ def borrar_historial():
         flash('Contraseña incorrecta', 'danger')
     return redirect(url_for('ver_historial'))
 
-
-@app.route('/generar_calendario', methods=['POST'])
-def generar_calendario():
-    # Obtener el último historial de SQLite
-    db = get_db()
-    ultimo_historial = db.execute('SELECT * FROM historial ORDER BY fecha DESC LIMIT 1').fetchone()
-    
-    calendario_anterior = None
-    contador_tareas_anterior = None
-    if ultimo_historial:
-        calendario_anterior = json.loads(ultimo_historial['calendario'])
-        contador_tareas_anterior = json.loads(ultimo_historial['contador_tareas'])
-
-    # Generar el nuevo calendario
-    calendario = asignar_tareas_mejorado(get_personas(), espacios, dias, calendario_anterior, contador_tareas_anterior)
-    contador_tareas = contar_tareas_mejorado(calendario)
-
+#borrar historial individual
 @app.route('/borrar_historial_individual/<int:id>', methods=['POST'])
 def borrar_historial_individual(id):
-    db = get_db()
-    db.execute('DELETE FROM historial WHERE id = ?', (id,))
-    db.commit()
-    flash('Entrada de historial borrada correctamente', 'success')
+    password = request.form.get('password')
+    if password == os.getenv('ADMIN_PASSWORD'):
+        db = get_db()
+        db.execute('DELETE FROM historial WHERE id = ?', (id,))
+        db.commit()
+        flash('Entrada de historial borrada correctamente', 'success')
+    else:
+        flash('Contraseña incorrecta', 'danger')
     return redirect(url_for('ver_historial'))
-
 
 @app.route('/editar_historial/<int:id>', methods=['GET', 'POST'])
 def editar_historial(id):
     db = get_db()
     if request.method == 'POST':
-        # Procesar los datos del formulario
+        # Procesar los datos del formulario sino no funca
         form_data = request.form.to_dict()
         calendario = {}
         for key, value in form_data.items():
@@ -253,6 +215,45 @@ def editar_historial(id):
     else:
         flash('El historial no existe', 'danger')
         return redirect(url_for('ver_historial'))
+
+# Generación de lista
+@app.route('/generar_lista')
+def generar_lista():
+    personas = get_personas()
+    # Reset tareas_asignadas for each person before generating the list
+    for persona in personas:
+        persona.tareas_asignadas = 0
+    
+    # Obtener el último historial
+    db = get_db()
+    ultimo_historial = db.execute('SELECT * FROM historial ORDER BY fecha DESC LIMIT 1').fetchone()
+    
+    if ultimo_historial:
+        calendario_anterior = json.loads(ultimo_historial['calendario'])
+        contador_tareas_anterior = json.loads(ultimo_historial['contador_tareas'])
+    else:
+        calendario_anterior = None
+        contador_tareas_anterior = None
+    
+    calendario = asignar_tareas_mejorado(personas, espacios, dias, calendario_anterior, contador_tareas_anterior)
+    contador_tareas = contar_tareas_mejorado(calendario)
+    return render_template('index.html', calendario=calendario, espacios=espacios, dias=dias, contador_tareas=contador_tareas)
+
+@app.route('/generar_calendario', methods=['POST'])
+def generar_calendario():
+    # Obtener el último historial de SQLite
+    db = get_db()
+    ultimo_historial = db.execute('SELECT * FROM historial ORDER BY fecha DESC LIMIT 1').fetchone()
+    
+    calendario_anterior = None
+    contador_tareas_anterior = None
+    if ultimo_historial:
+        calendario_anterior = json.loads(ultimo_historial['calendario'])
+        contador_tareas_anterior = json.loads(ultimo_historial['contador_tareas'])
+
+    # Generar el nuevo calendario
+    calendario = asignar_tareas_mejorado(get_personas(), espacios, dias, calendario_anterior, contador_tareas_anterior)
+    contador_tareas = contar_tareas_mejorado(calendario)
 
 if __name__ == '__main__':
     app.run(debug=True)

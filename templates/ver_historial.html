@@ -73,6 +73,11 @@
         </ul>
  
     </div>
+    <div class="card-footer">
+        <form action="{{ url_for('borrar_historial_individual', id=entrada.id) }}" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-danger btn-sm">Borrar</button>
+        </form>
+    </div>
 </div>
 {% endfor %}
 {% else %}
