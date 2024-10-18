@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Historial - Gestión de Tareas{% endblock %}
+
+{% block content %}
+<h1>Editar Historial</h1>
+
+<form action="{{ url_for('editar_historial', id=id) }}" method="POST">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Día</th>
+                {% for espacio in espacios %}
+                <th>{{ espacio.nombre }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for dia in dias %}
+            <tr>
+                <td>{{ dia }}</td>
+                {% for espacio in espacios %}
+                <td>
+                    <select name="{{ dia }}_{{ espacio.nombre }}" class="form-select">
+                        <option value="">-- Seleccionar --</option>
+                        {% for persona in personas %}
+                        {% if not espacio.genero_preferido or espacio.genero_preferido == persona.genero %}
+                        <option value="{{ persona.nombre }}" {% if calendario[dia][espacio.nombre]==persona.nombre
+                            %}selected{% endif %}>
+                            {{ persona.nombre }}
+                        </option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+</form>
+{% endblock %}

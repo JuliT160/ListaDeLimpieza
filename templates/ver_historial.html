@@ -40,6 +40,7 @@
 <div class="card mb-3">
     <div class="card-header">
         Fecha: {{ entrada.fecha }}
+        <a href="{{ url_for('editar_historial', id=entrada.id) }}" class="btn btn-primary btn-sm float-end">Editar</a>
     </div>
     <div class="card-body">
         <h5 class="card-title">Lista</h5>
