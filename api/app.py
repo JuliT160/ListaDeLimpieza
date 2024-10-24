@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, g
-from tareas_mejoradas import Persona, Espacio, asignar_tareas_mejorado, contar_tareas_mejorado
+from api.tareas_mejoradas import Persona, Espacio, asignar_tareas_mejorado, contar_tareas_mejorado
 from datetime import datetime
 from dotenv import load_dotenv
 import sqlite3
