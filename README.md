@@ -1,9 +1,6 @@
 # Gestión de Tareas de Limpieza del Centro Univeristario de Trenque Lauquen en La Plata
 
-Esta es una aplicación web para gestionar y asignar tareas de limpieza de la residencia, su uso es bastante especifico. Utiliza Flask para la creación del servidor web y permite ver, agregar, modificar y eliminar personas, así como generar una lista de tareas distribuidas uniformemente.
-
-# Aclaración
-El proyecto se encuentra en una etapa muy temprana de desarollo, puede tener errores y su estetica no es la final.
+Esta es una aplicación web para gestionar y asignar tareas de limpieza de la residencia, su uso es bastante especifico. Utiliza Flask para la creación del servidor web y permite ver, agregar, modificar y eliminar personas, así como generar una lista de tareas distribuidas uniformemente. Utiliza un historial almacenado en una base SQLite para mejorar la distribucion de las tareas en el tiempo
 
 ## Características
 
@@ -11,6 +8,7 @@ El proyecto se encuentra en una etapa muy temprana de desarollo, puede tener err
 - Agregar persona
 - Modificar persona / Eliminar persona
 - Generar lista de tareas
+- Historial
 
 ## Requisitos
 
